@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Fly Life 3D</title>
+<style>
+body{margin:0;overflow:hidden;background:#111;font-family:Arial}
+#ui{position:absolute;top:12px;left:12px;color:white;font-size:18px}
+#controls{position:absolute;bottom:25px;width:100%;display:flex;justify-content:space-around}
+button{background:#222;color:white;border:2px solid #888;border-radius:18px;padding:17px;font-size:22px}
+</style>
+</head>
+<body>
+<div id="ui">🪰 حياة الذبابة | الطعام: <span id="score">0</span></div>
+<div id="controls">
+<button id="left">⬅️</button>
+<button id="up">⬆️</button>
+<button id="down">⬇️</button>
+<button id="right">➡️</button>
+</div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x9bd5ef);
+scene.fog=new THREE.Fog(0x9bd5ef,20,65);
+
+const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,100);
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2));
+const light=new THREE.DirectionalLight(0xffffff,2);
+light.position.set(5,10,5);
+scene.add(light);
+
+const floor=new THREE.Mesh(
+new THREE.BoxGeometry(40,1,40),
+new THREE.MeshStandardMaterial({color:0x70a84d})
+);
+floor.position.y=-.5;
+scene.add(floor);
+
+const fly=new THREE.Group();
+scene.add(fly);
+
+const black=new THREE.MeshStandardMaterial({color:0x222222});
+const body=new THREE.Mesh(new THREE.SphereGeometry(.35,16,16),black);
+body.scale.set(.8,.8,1.5);
+fly.add(body);
+
+const head=new THREE.Mesh(new THREE.SphereGeometry(.23,16,16),black);
+head.position.z=.42;
+fly.add(head);
+
+const wingMat=new THREE.MeshStandardMaterial({
+color:0xddeeff,transparent:true,opacity:.7
+});
+const wings=[];
+for(let side of [-1,1]){
+const w=new THREE.Mesh(new THREE.SphereGeometry(.25,12,12),wingMat);
+w.scale.set(1.4,.12,.5);
+w.position.set(side*.35,.2,0);
+fly.add(w);
+wings.push(w);
+}
+
+fly.position.set(0,2,0);
+
+const foods=[];
+const foodMat=new THREE.MeshStandardMaterial({
+color:0xffcc00,emissive:0x553300
+});
+for(let i=0;i<25;i++){
+const f=new THREE.Mesh(new THREE.SphereGeometry(.25,12,12),foodMat);
+f.position.set((Math.random()-.5)*28,1+Math.random()*4,(Math.random()-.5)*28);
+scene.add(f);
+foods.push(f);
+}
+
+const obstacles=[];
+for(let i=0;i<12;i++){
+const o=new THREE.Mesh(
+new THREE.BoxGeometry(2,2,2),
+new THREE.MeshStandardMaterial({color:0x9a6a42})
+);
+o.position.set((Math.random()-.5)*28,1,(Math.random()-.5)*28);
+scene.add(o);
+obstacles.push(o);
+}
+
+const keys={};
+addEventListener('keydown',e=>keys[e.key.toLowerCase()]=true);
+addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+
+for(const [id,key] of [['left','a'],['right','d'],['up','w'],['down','s']]){
+const b=document.getElementById(id);
+b.onpointerdown=()=>keys[key]=true;
+b.onpointerup=()=>keys[key]=false;
+b.onpointerleave=()=>keys[key]=false;
+b.onpointercancel=()=>keys[key]=false;
+}
+
+let score=0;
+let speed=.13;
+const clock=new THREE.Clock();
+
+function animate(){
+requestAnimationFrame(animate);
+const t=clock.getElapsedTime();
+
+if(keys['w']||keys['arrowup'])fly.position.z-=speed;
+if(keys['s']||keys['arrowdown'])fly.position.z+=speed;
+if(keys['a']||keys['arrowleft'])fly.position.x-=speed;
+if(keys['d']||keys['arrowright'])fly.position.x+=speed;
+if(keys[' '])fly.position.y+=speed;
+if(keys['shift'])fly.position.y-=speed;
+
+fly.position.y=Math.max(.5,Math.min(9,fly.position.y));
+fly.position.x=Math.max(-18,Math.min(18,fly.position.x));
+fly.position.z=Math.max(-18,Math.min(18,fly.position.z));
+
+fly.rotation.y=Math.atan2(
+(keys['a']?-1:0)+(keys['d']?1:0),
+(keys['w']?-1:0)+(keys['s']?1:0)
+)||0;
+
+wings.forEach((w,i)=>w.rotation.z=Math.sin(t*18)*.6*(i?1:-1));
+
+for(let i=foods.length-1;i>=0;i--){
+if(fly.position.distanceTo(foods[i].position)<.8){
+scene.remove(foods[i]);
+foods.splice(i,1);
+score++;
+document.getElementById('score').textContent=score;
+}
+}
+
+const target=new THREE.Vector3(
+fly.position.x,
+fly.position.y+2,
+fly.position.z+6
+);
+camera.position.lerp(target,.09);
+camera.lookAt(fly.position);
+
+renderer.render(scene,camera);
+}
+animate();
+
+addEventListener('resize',()=>{
+camera.aspect=innerWidth/innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(innerWidth,innerHeight);
+});
+</script>
+</body>
+</html>
