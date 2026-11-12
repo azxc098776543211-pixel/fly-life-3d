@@ -3,185 +3,263 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>حياة الذبابة 3D</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Fly Life 3D - حياة الذبابة</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;overflow:hidden;background:#87ceeb;font-family:Arial;color:white;touch-action:none}
+body{margin:0;overflow:hidden;background:#83c9ed;color:white;font-family:Arial;touch-action:none}
 canvas{display:block}
-#hud{position:fixed;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:8px;z-index:5;pointer-events:none}
-.panel{background:#101b2bdc;padding:9px 13px;border-radius:12px;font-weight:bold;font-size:14px}
-#health{color:#ff7777}
-#controls{position:fixed;bottom:18px;left:0;right:0;height:155px;z-index:6;pointer-events:none}
-#joy{position:absolute;left:20px;bottom:5px;width:125px;height:125px;border-radius:50%;background:#ffffff30;border:3px solid #ffffff88;pointer-events:auto;touch-action:none}
-#stick{position:absolute;left:35px;top:35px;width:49px;height:49px;border-radius:50%;background:#ffffffbb;border:2px solid white}
-.btn{position:absolute;pointer-events:auto;border:2px solid #ffffff99;border-radius:50%;color:white;font-weight:bold;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
-#fire{right:22px;bottom:15px;width:76px;height:76px;background:#e33b3bdc;font-size:17px}
-#up{right:112px;bottom:88px;width:53px;height:53px;background:#258bd5dd;font-size:23px}
-#down{right:112px;bottom:25px;width:53px;height:53px;background:#258bd5dd;font-size:23px}
-#message{pos
-#overlay{display:none;position:fixed;inset:0;background:#07111ddd;z-index:10;align-items:center;justify-content:center;text-align:center}
-#overlay div{background:#18283b;padding:25px;border-radius:18px;width:85%;max-width:330px}
-#overlay button{background:#20a56b;color:white;border:0;border-radius:10px;padding:13px 25px;font-size:18px;margin-top:12px}
-#error{display:none;position:fixed;inset:0;background:#180d0d;color:white;padding:25px;z-index:30;direction:ltr;overflow:auto}
+button{border:0;border-radius:12px;padding:9px 12px;background:#2368a9;color:white;font-weight:bold;font-size:13px}
+button:active{transform:scale(.94)}
+#hud{position:fixed;top:7px;left:7px;right:7px;z-index:4;display:flex;flex-wrap:wrap;justify-content:space-between;gap:5px;pointer-events:none}
+.stat{background:#101b2cdd;padding:7px 9px;border-radius:10px;font-size:12px;font-weight:bold}
+#bars{position:fixed;top:47px;left:8px;z-index:4;width:115px;display:grid;gap:4px;font-size:11px}
+.bar{height:9px;background:#222;border-radius:10px;overflow:hidden;border:1px solid #ffffff88}
+.fill{height:100%;width:100%;background:#38d46d}
+#hungerFill{background:#f0ae35}
+#thirstFill{background:#42c8ed}
+#topbuttons{position:fixed;top:91px;left:7px;z-index:7;display:flex;gap:4px;flex-wrap:wrap;max-width:75%}
+#topbuttons button{font-size:11px;padding:7px;background:#172a42ee}
+#controls{position:fixed;bottom:10px;left:0;right:0;height:145px;z-index:6;pointer-events:none}
+#joy{position:absolute;left:15px;bottom:2px;width:120px;height:120px;border:3px solid #ffffff99;background:#ffffff30;border-radius:50%;pointer-events:auto;touch-action:none}
+#stick{position:absolute;left:33px;top:33px;width:48px;height:48px;border-radius:50%;background:#ffffffcc;border:2px solid white}
+.btn{position:absolute;border:2px solid #ffffff99;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;pointer-events:auto;touch-action:none;user-select:none}
+#fire{right:15px;bottom:10px;width:75px;height:75px;background:#d83d35}
+#up{right:103px;bottom:83px;width:50px;height:50px;background:#237fc2;font-size:20px}
+#down{right:103px;bottom:18px;width:50px;height:50px;background:#237fc2;font-size:20px}
+#weapon{right:17px;bottom:94px;width:68px;height:42px;border-radius:12px;background:#7752b9;font-size:11px}
+#map{position:fixed;right:7px;top:137px;width:105px;height:105px;background:#10251dcc;border:2px solid white;border-radius:9px;z-index:4}
+#message{position:fixed;top:128px;left:50%;transform:translateX(-50%);background:#101b2cdd;padding:8px 11px;border-radius:10px;z-index:4;font-size:12px;white-space:nowrap;pointer-events:none}
+#panel{display:none;position:fixed;inset:0;background:#06101dee;z-index:15;align-items:center;justify-content:center;padding:15px}
+#panelBox{width:100%;max-width:430px;max-height:85vh;overflow:auto;background:#1a2b41;border:1px solid #ffffff44;border-radius:17px;padding:15px;text-align:center}
+#items{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.item{background:#30445c;border-radius:12px;padding:10px;font-size:12px}
+.item button{margin-top:8px;width:100%}
+#close{background:#a93c3c;margin-top:12px;width:100%}
+#overlay{display:none;position:fixed;inset:0;z-index:20;background:#07111dee;align-items:center;justify-content:center;text-align:center}
+#overlay div{background:#20344c;padding:25px;border-radius:18px;width:85%;max-width:330px}
+#overlay button{margin-top:10px}
+small{color:#c9d8e8}
 </style>
 </head>
 <body>
+
 <div id="hud">
- <div class="panel">❤️ <span id="hp">100</span></div>
- <div class="panel">⭐ النقاط: <span id="score">0</span></div>
- <div class="panel">🏆 المرحلة: <span id="level">1</span></div>
+ <div class="stat">❤️ <span id="hp">100</span></div>
+ <div class="stat">⭐ <span id="score">0</span></div>
+ <div class="stat">🏆 المرحلة <span id="level">1</span></div>
+ <div class="stat">🪙 <span id="coins">0</span></div>
 </div>
-<div id="message">🪰 استعد للقتال!</div>
+
+<div id="bars">
+ <div>🍎 الجوع <div class="bar"><div class="fill" id="hungerFill"></div></div></div>
+ <div>💧 العطش <div class="bar"><div class="fill" id="thirstFill"></div></div></div>
+</div>
+
+<div id="topbuttons">
+ <button id="shopBtn">🛒 المتجر</button>
+ <button id="worldBtn">🌍 العوالم</button>
+ <button id="soundBtn">🔊 الصوت</button>
+ <button id="saveBtn">💾 حفظ</button>
+</div>
+
+<div id="message">🪰 مرحباً بك في حياة الذبابة!</div>
+<canvas id="map" width="210" height="210"></canvas>
 
 <div id="controls">
  <div id="joy"><div id="stick"></div></div>
  <div class="btn" id="fire">🔫 رمي</div>
  <div class="btn" id="up">⬆️</div>
  <div class="btn" id="down">⬇️</div>
+ <div class="btn" id="weapon">🔫 عادي</div>
+</div>
+
+<div id="panel">
+ <div id="panelBox">
+  <h2 id="panelTitle">المتجر</h2>
+  <div id="items"></div>
+  <button id="close">إغلاق</button>
+ </div>
 </div>
 
 <div id="overlay">
  <div>
   <h1 id="endTitle">انتهت اللعبة!</h1>
-  <p id="endText">حاول مرة ثانية</p>
-  <button onclick="restartGame()">العب من جديد</button>
+  <p id="endText"></p>
+  <button id="restart">العب من جديد</button>
+  <button id="continue">متابعة اللعب</button>
  </div>
 </div>
-<div id="error"></div>
-
-<script>
-window.addEventListener('error',e=>{
- const box=document.getElementById('error');
- box.style.display='block';
- box.innerHTML='<h2>حدث خطأ في اللعبة</h2><p>'+String(e.message||'خطأ غير معروف')+'</p><p>تأكد من اتصال الإنترنت ثم أعد تحميل الصفحة.</p>';
-});
-window.addEventListener('unhandledrejection',e=>{
- const box=document.getElementById('error');
- box.style.display='block';
- box.innerHTML='<h2>تعذر تحميل اللعبة</h2><p>'+String(e.reason)+'</p><p>تأكد من اتصال الإنترنت.</p>';
-});
-</script>
 
 <script type="module">
 import * as THREE from 'https://esm.sh/three@0.160.0';
 
+const $=id=>document.getElementById(id);
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x87ceeb);
 scene.fog=new THREE.Fog(0x87ceeb,35,100);
 
-const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,180);
-const renderer=new THREE.WebGLRenderer({antialias:false});
+const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,200);
+const renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(innerWidth,innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
-document.body.appendChild(renderer.domElement);
+document.body.prepend(renderer.domElement);
 
-scene.add(new THREE.HemisphereLight(0xffffff,0x526b37,2));
+scene.add(new THREE.HemisphereLight(0xffffff,0x566b38,2));
 const sun=new THREE.DirectionalLight(0xffffff,2);
 sun.position.set(15,30,10);
 scene.add(sun);
 
+let hp=100,score=0,coins=0,level=1;
+let hunger=100,thirst=100;
+let weapon=0,weaponLevel=1,speedLevel=1,damageLevel=1,maxHealth=100;
+let world=0,gameOver=false,paused=false;
+let fireHeld=false,upHeld=false,downHeld=false;
+let joyX=0,joyY=0,shotTimer=0;
+let enemyDamageTimer=0,needsDamageTimer=0;
+let soundOn=true,audio=null;
+let enemies=[],shots=[],pickups=[],decorations=[];
+let pickupTimer=0,saveTimer=0;
+const clock=new THREE.Clock();
+
+const worlds=[
+ {name:'🌳 الحديقة',ground:0x55a34d,sky:0x87ceeb,fog:0x87ceeb},
+ {name:'🏜️ الصحراء',ground:0xc4a05b,sky:0xf5c27a,fog:0xf5c27a},
+ {name:'❄️ الثلج',ground:0xdceafa,sky:0x9bd4ed,fog:0xb9e3f4},
+ {name:'🌋 البركان',ground:0x4c2929,sky:0x8b4136,fog:0x8b4136}
+];
+
 const ground=new THREE.Mesh(
  new THREE.PlaneGeometry(180,180),
- new THREE.MeshStandardMaterial({color:0x55a34d})
+ new THREE.MeshStandardMaterial({color:worlds[0].ground})
 );
 ground.rotation.x=-Math.PI/2;
 ground.position.y=-1;
 scene.add(ground);
 
 const grid=new THREE.GridHelper(180,45,0x397c36,0x498b40);
-grid.position.y=-0.98;
+grid.position.y=-.98;
 scene.add(grid);
 
-// أشجار العالم
-for(let i=0;i<45;i++){
- const x=(Math.random()-.5)*110;
- const z=(Math.random()-.5)*110;
- if(Math.abs(x)<10&&Math.abs(z)<15)continue;
- const trunk=new THREE.Mesh(
-  new THREE.CylinderGeometry(.25,.4,2,7),
-  new THREE.MeshStandardMaterial({color:0x76502c})
- );
- trunk.position.set(x,0,z);
- scene.add(trunk);
- const leaves=new THREE.Mesh(
-  new THREE.SphereGeometry(1.6,8,7),
-  new THREE.MeshStandardMaterial({color:0x237b36})
- );
- leaves.position.set(x,1.5,z);
- scene.add(leaves);
+function buildDecorations(){
+ decorations.forEach(o=>scene.remove(o));
+ decorations=[];
+ for(let i=0;i<45;i++){
+  const x=(Math.random()-.5)*110,z=(Math.random()-.5)*110;
+  if(Math.abs(x)<10&&Math.abs(z)<15)continue;
+  const trunk=new THREE.Mesh(
+   new THREE.CylinderGeometry(.25,.4,2,7),
+   new THREE.MeshStandardMaterial({color:world===2?0x8899aa:0x76502c})
+  );
+  trunk.position.set(x,0,z);
+  scene.add(trunk);decorations.push(trunk);
+  const top=new THREE.Mesh(
+   new THREE.SphereGeometry(1.5,8,7),
+   new THREE.MeshStandardMaterial({color:worlds[world].ground})
+  );
+  top.position.set(x,1.5,z);
+  scene.add(top);decorations.push(top);
+ }
 }
+buildDecorations();
 
-// إنشاء الذبابة
 const fly=new THREE.Group();
 scene.add(fly);
 const black=new THREE.MeshStandardMaterial({color:0x20242a});
-const dark=new THREE.MeshStandardMaterial({color:0x343b42});
-const wingMat=new THREE.MeshStandardMaterial({color:0xbceaff,transparent:true,opacity:.65,side:THREE.DoubleSide});
+const wingMat=new THREE.MeshStandardMaterial({
+ color:0xbceaff,transparent:true,opacity:.65,side:THREE.DoubleSide
+});
 const eyeMat=new THREE.MeshStandardMaterial({color:0xff2020});
 
 function sphere(parent,x,y,z,sx,sy,sz,mat){
  const m=new THREE.Mesh(new THREE.SphereGeometry(1,12,10),mat);
- m.position.set(x,y,z);
- m.scale.set(sx,sy,sz);
- parent.add(m);
- return m;
+ m.position.set(x,y,z);m.scale.set(sx,sy,sz);
+ parent.add(m);return m;
 }
 sphere(fly,0,0,0,.42,.38,.62,black);
-sphere(fly,0,.05,-.65,.35,.32,.32,dark);
+sphere(fly,0,.05,-.65,.35,.32,.32,black);
 sphere(fly,-.18,.18,-.83,.12,.13,.1,eyeMat);
 sphere(fly,.18,.18,-.83,.12,.13,.1,eyeMat);
-
 const wings=[];
 for(const side of [-1,1]){
  const w=sphere(fly,side*.48,.42,-.05,.55,.035,.23,wingMat);
- w.rotation.z=side*.25;
  wings.push(w);
  for(let i=0;i<3;i++){
-  const leg=new THREE.Mesh(
-   new THREE.CylinderGeometry(.025,.025,.65,5),
-   black
-  );
+  const leg=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.65,5),black);
   leg.position.set(side*.25,-.38,(i-1)*.28);
-  leg.rotation.z=side*.7;
-  fly.add(leg);
+  leg.rotation.z=side*.7;fly.add(leg);
  }
 }
 fly.position.set(0,2,8);
 
-// الأعداء
-let enemies=[];
-let shots=[];
-let score=0,level=1,hp=100;
-let gameOver=false;
-let fireHeld=false,upHeld=false,downHeld=false;
-let joyX=0,joyY=0;
-let shotTimer=0,damageTimer=0;
-const clock=new THREE.Clock();
+function beep(freq=500,duration=.09,type='sine'){
+ if(!soundOn)return;
+ try{
+  audio=audio||new (window.AudioContext||window.webkitAudioContext)();
+  if(audio.state==='suspended')audio.resume();
+  const o=audio.createOscillator(),g=audio.createGain();
+  o.type=type;o.frequency.value=freq;
+  g.gain.value=.055;
+  o.connect(g);g.connect(audio.destination);
+  o.start();
+  g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);
+  o.stop(audio.currentTime+duration);
+ }catch(e){}
+}
+
+function showMessage(t){
+ $('message').textContent=t;
+ clearTimeout(showMessage.timer);
+ showMessage.timer=setTimeout(()=>$('message').textContent='🪰 استكشف العالم واهزم الأعداء!',2200);
+}
+
+function updateHUD(){
+ $('hp').textContent=Math.max(0,Math.ceil(hp));
+ $('score').textContent=score;
+ $('coins').textContent=coins;
+ $('level').textContent=level;
+ $('hungerFill').style.width=hunger+'%';
+ $('thirstFill').style.width=thirst+'%';
+}
 
 function makeEnemy(boss=false){
  const g=new THREE.Group();
- const bodyMat=new THREE.MeshStandardMaterial({color:boss?0x7b28a8:0x9b5b22});
- sphere(g,0,0,0,boss?.85:.42,boss?.7:.35,boss?.65:.42,bodyMat);
- sphere(g,0,.12,-.42,boss?.5:.27,boss?.4:.23,boss?.4:.25,black);
+ const material=new THREE.MeshStandardMaterial({
+  color:boss?[0x7b28a8,0xa82c25,0x273f9b][(level-1)%3]:0x9b5b22
+ });
+ sphere(g,0,0,0,boss?.85:.42,boss?.7:.35,boss?.65:.42,material);
+ sphere(g,0,.12,-.42,boss?.5:.27,boss?.4:.23,black);
  for(const s of [-1,1]){
   sphere(g,s*.18,.25,-.58,.09,.1,.08,eyeMat);
-  const wing=sphere(g,s*.48,.4,0,boss?.65:.35,.035,.2,wingMat);
-  wing.rotation.z=s*.3;
+  sphere(g,s*.48,.4,0,boss?.65:.35,.035,.2,wingMat);
  }
  g.position.set((Math.random()-.5)*24,2,-22-Math.random()*12);
  scene.add(g);
- enemies.push({mesh:g,boss,hp:boss?12:2,speed:boss?1.5:2.3,hit:0});
+ enemies.push({
+  mesh:g,boss,
+  hp:boss?18+level*4:2+Math.floor(level/4),
+  speed:boss?1.3+level*.04:2+level*.07
+ });
 }
 
 function spawnWave(){
- const boss=level%3===0;
- const count=boss?1:Math.min(3+level,9);
- for(let i=0;i<count;i++)makeEnemy(boss);
- document.getElementById('message').textContent=boss?'👑 ظهر الزعيم!':'⚔️ موجة جديدة!';
- setTimeout(()=>{document.getElementById('message').textContent='دافع عن نفسك وأطلق النار!'},1800);
+ if(level%3===0){
+  makeEnemy(true);
+  showMessage('👑 انتبه! ظهر الزعيم!');
+ }else{
+  for(let i=0;i<Math.min(3+level,10);i++)makeEnemy();
+  showMessage('⚔️ بدأت موجة جديدة!');
+ }
 }
-spawnWave();
+
+const weaponNames=['عادي','سريع','ناري'];
+const weaponColors=[0xffee55,0x55eaff,0xff5722];
+
+function cycleWeapon(){
+ weapon=(weapon+1)%3;
+ $('weapon').textContent='🔫 '+weaponNames[weapon];
+ beep(650,.08);
+}
 
 function shoot(){
  let target=null,dist=Infinity;
@@ -189,57 +267,218 @@ function shoot(){
   const d=fly.position.distanceTo(e.mesh.position);
   if(d<dist){dist=d;target=e;}
  }
- let direction=new THREE.Vector3(0,0,-1);
- if(target){
-  direction.copy(target.mesh.position).sub(fly.position).normalize();
- }
+ const dir=new THREE.Vector3(0,0,-1);
+ if(target)dir.copy(target.mesh.position).sub(fly.position).normalize();
  const ball=new THREE.Mesh(
-  new THREE.SphereGeometry(.13,8,8),
-  new THREE.MeshBasicMaterial({color:0xffee55})
+  new THREE.SphereGeometry(weapon===2?.22:.13,8,8),
+  new THREE.MeshBasicMaterial({color:weaponColors[weapon]})
  );
  ball.position.copy(fly.position);
  scene.add(ball);
- shots.push({mesh:ball,dir:direction,life:2.5});
+ shots.push({
+  mesh:ball,dir,life:2.5,
+  damage:(weapon===2?3:1)*damageLevel*weaponLevel
+ });
+ beep(weapon===2?220:weapon===1?850:500,.07,'square');
 }
 
-function updateHUD(){
- document.getElementById('hp').textContent=hp;
- document.getElementById('score').textContent=score;
- document.getElementById('level').textContent=level;
+function makePickup(type){
+ const color=type==='food'?0xff5733:0x33cfff;
+ const m=new THREE.Mesh(
+  new THREE.SphereGeometry(.4,12,10),
+  new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:.25})
+ );
+ m.position.set((Math.random()-.5)*32,1.5,-15-Math.random()*25);
+ scene.add(m);
+ pickups.push({mesh:m,type});
+}
+
+function spawnPickups(){
+ makePickup('food');
+ makePickup('water');
+}
+
+const shopItems=[
+ {name:'❤️ زيادة الصحة',desc:'زيادة الحد الأعلى للصحة',price:40,buy(){
+  maxHealth+=20;hp=Math.min(maxHealth,hp+20);
+ }},
+ {name:'⚡ سرعة الطيران',desc:'زيادة سرعة الحركة',price:35,buy(){speedLevel++;}},
+ {name:'💥 قوة الرمي',desc:'زيادة ضرر الأسلحة',price:50,buy(){damageLevel++;}},
+ {name:'🔫 تطوير السلاح',desc:'زيادة قوة الطلقات',price:65,buy(){weaponLevel++;}},
+ {name:'🍎 طعام',desc:'استعادة الجوع',price:12,buy(){hunger=100;}},
+ {name:'💧 ماء',desc:'استعادة العطش',price:12,buy(){thirst=100;}},
+ {name:'❤️ علاج',desc:'استعادة الصحة',price:25,buy(){hp=Math.min(maxHealth,hp+40);}}
+];
+
+function saveGame(){
+ try{
+  const data={
+   hp,score,coins,level,hunger,thirst,weapon,
+   weaponLevel,speedLevel,damageLevel,maxHealth,world
+  };
+  localStorage.setItem('flyLifeSave',JSON.stringify(data));
+  showMessage('💾 تم حفظ تقدمك!');
+ }catch(e){showMessage('تعذر الحفظ على هذا المتصفح');}
+}
+
+function saveQuietly(){
+ try{
+  localStorage.setItem('flyLifeSave',JSON.stringify({
+   hp,score,coins,level,hunger,thirst,weapon,
+   weaponLevel,speedLevel,damageLevel,maxHealth,world
+  }));
+ }catch(e){}
+}
+
+function changeWorld(i){
+ world=i;
+ scene.background=new THREE.Color(worlds[i].sky);
+ scene.fog.color.set(worlds[i].fog);
+ ground.material.color.set(worlds[i].ground);
+ grid.visible=i===0;
+ buildDecorations();
+ showMessage('🌍 انتقلت إلى '+worlds[i].name);
+ beep(700,.2);
+}
+
+function loadGame(){
+ try{
+  const d=JSON.parse(localStorage.getItem('flyLifeSave'));
+  if(!d)return;
+  hp=d.hp??100;score=d.score??0;coins=d.coins??0;
+  level=d.level??1;hunger=d.hunger??100;thirst=d.thirst??100;
+  weapon=d.weapon??0;weaponLevel=d.weaponLevel??1;
+  speedLevel=d.speedLevel??1;damageLevel=d.damageLevel??1;
+  maxHealth=d.maxHealth??100;world=d.world??0;
+  hp=Math.min(hp,maxHealth);
+  world=Math.max(0,Math.min(3,world));
+  weapon=Math.max(0,Math.min(2,weapon));
+  changeWorld(world);
+  $('weapon').textContent='🔫 '+weaponNames[weapon];
+  updateHUD();
+  showMessage('💾 تم تحميل تقدمك السابق');
+ }catch(e){}
+}
+
+function openPanel(type){
+ paused=true;
+ const items=$('items');
+ items.innerHTML='';
+ if(type==='shop'){
+  $('panelTitle').textContent='🛒 متجر الذبابة';
+  for(const item of shopItems){
+   const d=document.createElement('div');
+   d.className='item';
+   d.innerHTML='<b>'+item.name+'</b><br><small>'+item.desc+'</small><br>🪙 '+item.price;
+   const b=document.createElement('button');
+   b.textContent='شراء';
+   b.addEventListener('click',()=>{
+    if(coins<item.price){showMessage('❌ عملاتك غير كافية');return;}
+    coins-=item.price;
+    item.buy();
+    updateHUD();saveQuietly();
+    showMessage('✅ تم الشراء!');
+   });
+   d.appendChild(b);items.appendChild(d);
+  }
+ }else{
+  $('panelTitle').textContent='🌍 اختيار العالم';
+  worlds.forEach((w,i)=>{
+   const d=document.createElement('div');
+   d.className='item';
+   d.innerHTML='<b>'+w.name+'</b><br><small>عالم المغامرات رقم '+(i+1)+'</small>';
+   const b=document.createElement('button');
+   b.textContent=i===world?'العالم الحالي':'انتقال';
+   b.addEventListener('click',()=>{
+    if(level<(i*3+1)){
+     showMessage('🔒 أكمل مراحل أكثر لفتح هذا العالم');
+     return;
+    }
+    changeWorld(i);closePanel();saveQuietly();
+   });
+   d.appendChild(b);items.appendChild(d);
+  });
+ }
+ $('panel').style.display='flex';
+}
+
+function closePanel(){
+ $('panel').style.display='none';
+ paused=false;
 }
 
 function endGame(){
- gameOver=true;
- document.getElementById('endTitle').textContent='انتهت اللعبة!';
- document.getElementById('endText').textContent='نقاطك: '+score;
- document.getElementById('overlay').style.display='flex';
+ if(gameOver)return;
+ gameOver=true;paused=true;
+ $('endTitle').textContent='انتهت المغامرة!';
+ $('endText').textContent='نقاطك: '+score+' | المرحلة: '+level;
+ $('overlay').style.display='flex';
+ saveQuietly();
+}
+
+function closeOverlay(){
+ if(hp<=0)return;
+ gameOver=false;paused=false;
+ $('overlay').style.display='none';
 }
 
 function restartGame(){
- for(const e of enemies)scene.remove(e.mesh);
- for(const s of shots)scene.remove(s.mesh);
- enemies=[];shots=[];
- score=0;level=1;hp=100;gameOver=false;
+ hp=maxHealth;hunger=100;thirst=100;
+ score=0;coins=0;level=1;world=0;
+ weapon=0;weaponLevel=1;speedLevel=1;damageLevel=1;
+ enemies.forEach(e=>scene.remove(e.mesh));
+ shots.forEach(s=>scene.remove(s.mesh));
+ pickups.forEach(p=>scene.remove(p.mesh));
+ enemies=[];shots=[];pickups=[];
  fly.position.set(0,2,8);
- updateHUD();
- document.getElementById('overlay').style.display='none';
- spawnWave();
+ changeWorld(0);
+ updateHUD();spawnWave();spawnPickups();
+ gameOver=false;paused=false;
+ $('overlay').style.display='none';
+ $('weapon').textContent='🔫 عادي';
+ saveQuietly();
 }
 
-// الجير
-const joy=document.getElementById('joy');
-const stick=document.getElementById('stick');
+function loadSavedGame(){
+ loadGame();
+ if(hp<=0)hp=maxHealth;
+ updateHUD();
+}
+loadSavedGame();
+spawnWave();
+spawnPickups();
+
+$('shopBtn').addEventListener('click',()=>openPanel('shop'));
+$('worldBtn').addEventListener('click',()=>openPanel('world'));
+$('soundBtn').addEventListener('click',()=>{
+ soundOn=!soundOn;
+ $('soundBtn').textContent=soundOn?'🔊 الصوت':'🔇 الصوت';
+ showMessage(soundOn?'تم تشغيل الصوت':'تم إيقاف الصوت');
+});
+$('saveBtn').addEventListener('click',saveGame);
+$('close').addEventListener('click',closePanel);
+$('restart').addEventListener('click',restartGame);
+$('continue').addEventListener('click',closeOverlay);
+$('weapon').addEventListener('click',cycleWeapon);
+
+const joy=$('joy'),stick=$('stick');
 let joyPointer=null;
+
 function setJoy(e){
  const r=joy.getBoundingClientRect();
  let x=e.clientX-(r.left+r.width/2);
  let y=e.clientY-(r.top+r.height/2);
- const max=42;
- const len=Math.hypot(x,y);
+ const max=42,len=Math.hypot(x,y);
  if(len>max){x=x/len*max;y=y/len*max;}
  joyX=x/max;joyY=y/max;
  stick.style.transform=`translate(${x}px,${y}px)`;
 }
+
+function releaseJoy(){
+ joyPointer=null;joyX=0;joyY=0;
+ stick.style.transform='translate(0px,0px)';
+}
+
 joy.addEventListener('pointerdown',e=>{
  joyPointer=e.pointerId;
  joy.setPointerCapture(e.pointerId);
@@ -248,77 +487,111 @@ joy.addEventListener('pointerdown',e=>{
 joy.addEventListener('pointermove',e=>{
  if(e.pointerId===joyPointer)setJoy(e);
 });
-function releaseJoy(){
- joyPointer=null;joyX=0;joyY=0;
- stick.style.transform='translate(0px,0px)';
-}
 joy.addEventListener('pointerup',releaseJoy);
 joy.addEventListener('pointercancel',releaseJoy);
 
 function holdButton(id,setter){
- const el=document.getElementById(id);
+ const el=$(id);
  el.addEventListener('pointerdown',e=>{
   e.preventDefault();setter(true);
  });
  el.addEventListener('pointerup',()=>setter(false));
  el.addEventListener('pointercancel',()=>setter(false));
  el.addEventListener('pointerleave',()=>setter(false));
+ el.addEventListener('lostpointercapture',()=>setter(false));
 }
+
 holdButton('fire',v=>fireHeld=v);
 holdButton('up',v=>upHeld=v);
 holdButton('down',v=>downHeld=v);
 
+const map=$('map'),ctx=map.getContext('2d');
+
+function drawMap(){
+ ctx.clearRect(0,0,210,210);
+ ctx.fillStyle=world===1?'#a88953':world===2?'#a5cddd':world===3?'#63352d':'#347c49';
+ ctx.fillRect(0,0,210,210);
+ ctx.fillStyle='#fff';
+ ctx.beginPath();ctx.arc(105,105,6,0,Math.PI*2);ctx.fill();
+
+ for(const e of enemies){
+  const x=105+(e.mesh.position.x-fly.position.x)*2;
+  const y=105+(e.mesh.position.z-fly.position.z)*2;
+  if(x<0||x>210||y<0||y>210)continue;
+  ctx.fillStyle=e.boss?'#ff2020':'#ffbd42';
+  ctx.beginPath();ctx.arc(x,y,e.boss?7:4,0,Math.PI*2);ctx.fill();
+ }
+ for(const p of pickups){
+  const x=105+(p.mesh.position.x-fly.position.x)*2;
+  const y=105+(p.mesh.position.z-fly.position.z)*2;
+  ctx.fillStyle=p.type==='food'?'#ff5733':'#33cfff';
+  ctx.fillRect(x-3,y-3,6,6);
+ }
+}
+
 function animate(){
  requestAnimationFrame(animate);
  const dt=Math.min(clock.getDelta(),.04);
- if(!gameOver){
-  // الحركة
-  fly.position.x+=joyX*10*dt;
-  fly.position.z+=joyY*10*dt;
+
+ if(!gameOver&&!paused){
+  const t=performance.now()*.025;
+
+  fly.position.x+=joyX*10*speedLevel*.65*dt;
+  fly.position.z+=joyY*10*speedLevel*.65*dt;
   if(upHeld)fly.position.y+=7*dt;
   if(downHeld)fly.position.y-=7*dt;
-  fly.position.x=THREE.MathUtils.clamp(fly.position.x,-35,35);
-  fly.position.z=THREE.MathUtils.clamp(fly.position.z,-30,25);
-  fly.position.y=THREE.MathUtils.clamp(fly.position.y,.8,12);
+
+  fly.position.x=THREE.MathUtils.clamp(fly.position.x,-40,40);
+  fly.position.z=THREE.MathUtils.clamp(fly.position.z,-35,35);
+  fly.position.y=THREE.MathUtils.clamp(fly.position.y,.8,14);
+
   fly.rotation.z=-joyX*.3;
   fly.rotation.x=joyY*.15;
-
-  // حركة الأجنحة
-  const t=performance.now()*.025;
   wings[0].rotation.z=Math.sin(t)*.8-.3;
   wings[1].rotation.z=-Math.sin(t)*.8+.3;
 
-  // كاميرا خلف الذبابة
   const camPos=new THREE.Vector3(
-   fly.position.x,
-   fly.position.y+4,
-   fly.position.z+9
+   fly.position.x,fly.position.y+4,fly.position.z+9
   );
   camera.position.lerp(camPos,1-Math.pow(.001,dt));
   camera.lookAt(fly.position.x,fly.position.y,fly.position.z-5);
 
-  // الرمي المستمر
   shotTimer-=dt;
   if(fireHeld&&shotTimer<=0){
-   shoot();shotTimer=.22;
+   shoot();
+   shotTimer=weapon===1?.09:.23;
   }
 
-  // حركة المقذوفات
+  hunger=Math.max(0,hunger-.32*dt);
+  thirst=Math.max(0,thirst-.42*dt);
+
+  if(hunger===0||thirst===0){
+   needsDamageTimer-=dt;
+   if(needsDamageTimer<=0){
+    hp-=1;needsDamageTimer=1;
+    updateHUD();
+   }
+  }else needsDamageTimer=0;
+
   for(let i=shots.length-1;i>=0;i--){
    const s=shots[i];
    s.mesh.position.addScaledVector(s.dir,24*dt);
    s.life-=dt;
    let remove=s.life<=0;
+
    for(let j=enemies.length-1;j>=0&&!remove;j--){
     const e=enemies[j];
-    if(s.mesh.position.distanceTo(e.mesh.position)<1.1){
-     e.hp--;
+    if(s.mesh.position.distanceTo(e.mesh.position)<1.15){
+     e.hp-=s.damage;
      remove=true;
+     beep(180,.05);
      if(e.hp<=0){
-      score+=e.boss?100:10;
+      score+=e.boss?150:10;
+      coins+=e.boss?80:5;
       scene.remove(e.mesh);
       enemies.splice(j,1);
       updateHUD();
+      showMessage(e.boss?'👑 انتصرت على الزعيم!':'⭐ هزمت عدواً!');
      }
     }
    }
@@ -328,38 +601,75 @@ function animate(){
    }
   }
 
-  // الأعداء يقتربون من الذبابة
-  damageTimer-=dt;
+  enemyDamageTimer-=dt;
   for(const e of enemies){
-   const dir=new THREE.Vector3().subVectors(fly.position,e.mesh.position).normalize();
+   const dir=new THREE.Vector3().subVectors(
+    fly.position,e.mesh.position
+   ).normalize();
    e.mesh.position.addScaledVector(dir,e.speed*dt);
    e.mesh.lookAt(fly.position);
-   if(e.mesh.position.distanceTo(fly.position)<1.25&&damageTimer<=0){
-    hp-=e.boss?12:7;
-    damageTimer=.55;
+
+   if(e.mesh.position.distanceTo(fly.position)<1.3&&enemyDamageTimer<=0){
+    hp-=e.boss?12:6;
+    enemyDamageTimer=.6;
     updateHUD();
-    if(hp<=0){hp=0;updateHUD();endGame();}
+    beep(100,.15,'sawtooth');
    }
   }
 
-  // نهاية الموجة
+  for(let i=pickups.length-1;i>=0;i--){
+   const p=pickups[i];
+   p.mesh.rotation.y+=dt*2;
+   if(p.mesh.position.distanceTo(fly.position)<1.3){
+    if(p.type==='food')hunger=Math.min(100,hunger+45);
+    else thirst=Math.min(100,thirst+45);
+    scene.remove(p.mesh);
+    pickups.splice(i,1);
+    beep(900,.12);
+    showMessage(p.type==='food'?'🍎 أكلت الطعام!':'💧 شربت الماء!');
+    updateHUD();
+   }
+  }
+
+  pickupTimer-=dt;
+  if(pickupTimer<=0&&pickups.length<3){
+   spawnPickups();
+   pickupTimer=12;
+  }
+
   if(enemies.length===0){
    level++;
-   hp=Math.min(100,hp+15);
+   coins+=15;
    updateHUD();
+   showMessage('🎉 أكملت المرحلة! +15 عملة');
    spawnWave();
   }
+
+  saveTimer+=dt;
+  if(saveTimer>=15){
+   saveQuietly();
+   saveTimer=0;
+  }
+
+  if(hp<=0){
+   hp=0;
+   updateHUD();
+   endGame();
+  }
+  updateHUD();
  }
+
+ drawMap();
  renderer.render(scene,camera);
 }
-animate();
 
 addEventListener('resize',()=>{
  camera.aspect=innerWidth/innerHeight;
  camera.updateProjectionMatrix();
  renderer.setSize(innerWidth,innerHeight);
- renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
 });
+updateHUD();
+animate();
 </script>
 </body>
 </html>
