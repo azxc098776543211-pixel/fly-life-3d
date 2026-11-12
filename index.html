@@ -3,438 +3,363 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Fly Life 3D</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>حياة الذبابة 3D</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;overflow:hidden;background:#111;font-family:Arial;touch-action:none}
+body{margin:0;overflow:hidden;background:#87ceeb;font-family:Arial;color:white;touch-action:none}
 canvas{display:block}
-#hud{position:fixed;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;color:white;z-index:3;pointer-events:none}
-.panel{background:#111c;padding:10px;border-radius:12px;font-size:14px}
-#bossPanel{position:fixed;top:65px;left:50%;transform:translateX(-50%);width:70%;text-align:center;color:white;z-index:3}
-#bar{height:13px;background:#333;border:1px solid white;border-radius:20px;overflow:hidden;margin-top:5px}
-#bossFill{height:100%;width:100%;background:#f33}
-#controls{position:fixed;inset:0;pointer-events:none;z-index:4}
-#base{position:absolute;left:22px;bottom:25px;width:135px;height:135px;border:2px solid #ffffff99;background:#ffffff22;border-radius:50%;pointer-events:auto;touch-action:none}
-#stick{position:absolute;left:39px;top:39px;width:53px;height:53px;background:#eee;border-radius:50%;border:2px solid white}
-.btn{position:absolute;right:22px;bottom:35px;width:70px;height:70px;border-radius:50%;background:#bd3030;color:white;border:2px solid white;font-size:25px;pointer-events:auto;touch-action:none}
-#up,#down{width:48px;height:48px;background:#2364a0}
-#up{bottom:115px}
-#down{bottom:58px}
-#shoot{font-size:30px}
-#msg{display:none;position:fixed;z-index:8;top:40%;left:50%;transform:translate(-50%,-50%);background:#111e;color:white;padding:20px;border-radius:15px;text-align:center;font-size:22px}
-#help{position:fixed;bottom:5px;left:50%;transform:translateX(-50%);color:white;font-size:11px;z-index:3;white-space:nowrap}
+#hud{position:fixed;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:8px;z-index:5;pointer-events:none}
+.panel{background:#101b2bdc;padding:9px 13px;border-radius:12px;font-weight:bold;font-size:14px}
+#health{color:#ff7777}
+#controls{position:fixed;bottom:18px;left:0;right:0;height:155px;z-index:6;pointer-events:none}
+#joy{position:absolute;left:20px;bottom:5px;width:125px;height:125px;border-radius:50%;background:#ffffff30;border:3px solid #ffffff88;pointer-events:auto;touch-action:none}
+#stick{position:absolute;left:35px;top:35px;width:49px;height:49px;border-radius:50%;background:#ffffffbb;border:2px solid white}
+.btn{position:absolute;pointer-events:auto;border:2px solid #ffffff99;border-radius:50%;color:white;font-weight:bold;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
+#fire{right:22px;bottom:15px;width:76px;height:76px;background:#e33b3bdc;font-size:17px}
+#up{right:112px;bottom:88px;width:53px;height:53px;background:#258bd5dd;font-size:23px}
+#down{right:112px;bottom:25px;width:53px;height:53px;background:#258bd5dd;font-size:23px}
+#message{position:fixed;top:75px;left:50%;transform:translateX(-50%);background:#111c;color:#fff;padding:10px 18px;border-radius:12px;z-index:8;text-align:center;pointer-events:none}
+#overlay{display:none;position:fixed;inset:0;background:#07111ddd;z-index:10;align-items:center;justify-content:center;text-align:center}
+#overlay div{background:#18283b;padding:25px;border-radius:18px;width:85%;max-width:330px}
+#overlay button{background:#20a56b;color:white;border:0;border-radius:10px;padding:13px 25px;font-size:18px;margin-top:12px}
+#error{display:none;position:fixed;inset:0;background:#180d0d;color:white;padding:25px;z-index:30;direction:ltr;overflow:auto}
 </style>
 </head>
 <body>
 <div id="hud">
-<div class="panel">🪰 حياة الذبابة<br>المرحلة: <b id="stage">1</b></div>
-<div class="panel">❤️ الصحة: <b id="health">100</b><br>⭐ النقاط: <b id="score">0</b></div>
+ <div class="panel">❤️ <span id="hp">100</span></div>
+ <div class="panel">⭐ النقاط: <span id="score">0</span></div>
+ <div class="panel">🏆 المرحلة: <span id="level">1</span></div>
 </div>
-<div id="bossPanel">👹 <span id="bossName">الزعيم الصغير</span><div id="bar"><div id="bossFill"></div></div></div>
-<div id="msg"></div>
+<div id="message">🪰 استعد للقتال!</div>
+
 <div id="controls">
-<div id="base"><div id="stick"></div></div>
-<button class="btn" id="shoot">●</button>
-<button class="btn" id="up">⬆</button>
-<button class="btn" id="down">⬇</button>
+ <div id="joy"><div id="stick"></div></div>
+ <div class="btn" id="fire">🔫 رمي</div>
+ <div class="btn" id="up">⬆️</div>
+ <div class="btn" id="down">⬇️</div>
 </div>
-<div id="help">اسحب الجير للحركة • الأسهم للارتفاع • ● للرمي</div>
+
+<div id="overlay">
+ <div>
+  <h1 id="endTitle">انتهت اللعبة!</h1>
+  <p id="endText">حاول مرة ثانية</p>
+  <button onclick="restartGame()">العب من جديد</button>
+ </div>
+</div>
+<div id="error"></div>
+
+<script>
+window.addEventListener('error',e=>{
+ const box=document.getElementById('error');
+ box.style.display='block';
+ box.innerHTML='<h2>حدث خطأ في اللعبة</h2><p>'+String(e.message||'خطأ غير معروف')+'</p><p>تأكد من اتصال الإنترنت ثم أعد تحميل الصفحة.</p>';
+});
+window.addEventListener('unhandledrejection',e=>{
+ const box=document.getElementById('error');
+ box.style.display='block';
+ box.innerHTML='<h2>تعذر تحميل اللعبة</h2><p>'+String(e.reason)+'</p><p>تأكد من اتصال الإنترنت.</p>';
+});
+</script>
 
 <script type="module">
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+import * as THREE from 'https://esm.sh/three@0.160.0';
 
 const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x91cce8);
-scene.fog=new THREE.Fog(0x91cce8,25,70);
+scene.background=new THREE.Color(0x87ceeb);
+scene.fog=new THREE.Fog(0x87ceeb,35,100);
 
-const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,100);
-const renderer=new THREE.WebGLRenderer({antialias:true});
+const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,180);
+const renderer=new THREE.WebGLRenderer({antialias:false});
 renderer.setSize(innerWidth,innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
 document.body.appendChild(renderer.domElement);
 
-scene.add(new THREE.HemisphereLight(0xffffff,0x667744,2));
-const light=new THREE.DirectionalLight(0xffffff,2);
-light.position.set(8,15,8);
-scene.add(light);
+scene.add(new THREE.HemisphereLight(0xffffff,0x526b37,2));
+const sun=new THREE.DirectionalLight(0xffffff,2);
+sun.position.set(15,30,10);
+scene.add(sun);
 
 const ground=new THREE.Mesh(
-new THREE.BoxGeometry(42,1,42),
-new THREE.MeshStandardMaterial({color:0x70a84d})
+ new THREE.PlaneGeometry(180,180),
+ new THREE.MeshStandardMaterial({color:0x55a34d})
 );
-ground.position.y=-.5;
+ground.rotation.x=-Math.PI/2;
+ground.position.y=-1;
 scene.add(ground);
 
+const grid=new THREE.GridHelper(180,45,0x397c36,0x498b40);
+grid.position.y=-0.98;
+scene.add(grid);
+
+// أشجار العالم
+for(let i=0;i<45;i++){
+ const x=(Math.random()-.5)*110;
+ const z=(Math.random()-.5)*110;
+ if(Math.abs(x)<10&&Math.abs(z)<15)continue;
+ const trunk=new THREE.Mesh(
+  new THREE.CylinderGeometry(.25,.4,2,7),
+  new THREE.MeshStandardMaterial({color:0x76502c})
+ );
+ trunk.position.set(x,0,z);
+ scene.add(trunk);
+ const leaves=new THREE.Mesh(
+  new THREE.SphereGeometry(1.6,8,7),
+  new THREE.MeshStandardMaterial({color:0x237b36})
+ );
+ leaves.position.set(x,1.5,z);
+ scene.add(leaves);
+}
+
+// إنشاء الذبابة
 const fly=new THREE.Group();
 scene.add(fly);
+const black=new THREE.MeshStandardMaterial({color:0x20242a});
+const dark=new THREE.MeshStandardMaterial({color:0x343b42});
+const wingMat=new THREE.MeshStandardMaterial({color:0xbceaff,transparent:true,opacity:.65,side:THREE.DoubleSide});
+const eyeMat=new THREE.MeshStandardMaterial({color:0xff2020});
 
-const dark=new THREE.MeshStandardMaterial({color:0x22222b});
-const body=new THREE.Mesh(new THREE.SphereGeometry(.35,16,16),dark);
-body.scale.set(.8,.8,1.5);
-fly.add(body);
-
-const head=new THREE.Mesh(new THREE.SphereGeometry(.23,16,16),dark);
-head.position.z=.42;
-fly.add(head);
+function sphere(parent,x,y,z,sx,sy,sz,mat){
+ const m=new THREE.Mesh(new THREE.SphereGeometry(1,12,10),mat);
+ m.position.set(x,y,z);
+ m.scale.set(sx,sy,sz);
+ parent.add(m);
+ return m;
+}
+sphere(fly,0,0,0,.42,.38,.62,black);
+sphere(fly,0,.05,-.65,.35,.32,.32,dark);
+sphere(fly,-.18,.18,-.83,.12,.13,.1,eyeMat);
+sphere(fly,.18,.18,-.83,.12,.13,.1,eyeMat);
 
 const wings=[];
-const wingMat=new THREE.MeshStandardMaterial({
-color:0xe5f4ff,transparent:true,opacity:.7
-});
-
-for(const s of [-1,1]){
-const w=new THREE.Mesh(new THREE.SphereGeometry(.25,12,12),wingMat);
-w.scale.set(1.5,.1,.5);
-w.position.set(s*.35,.2,0);
-fly.add(w);
-wings.push(w);
+for(const side of [-1,1]){
+ const w=sphere(fly,side*.48,.42,-.05,.55,.035,.23,wingMat);
+ w.rotation.z=side*.25;
+ wings.push(w);
+ for(let i=0;i<3;i++){
+  const leg=new THREE.Mesh(
+   new THREE.CylinderGeometry(.025,.025,.65,5),
+   black
+  );
+  leg.position.set(side*.25,-.38,(i-1)*.28);
+  leg.rotation.z=side*.7;
+  fly.add(leg);
+ }
 }
-
 fly.position.set(0,2,8);
 
-const foods=[];
-const foodMat=new THREE.MeshStandardMaterial({color:0xffd12e,emissive:0x553300});
-
-for(let i=0;i<20;i++){
-const f=new THREE.Mesh(new THREE.SphereGeometry(.22,12,12),foodMat);
-f.position.set((Math.random()-.5)*32,.5+Math.random()*5,(Math.random()-.5)*30);
-scene.add(f);
-foods.push(f);
-}
-
-let stage=1;
-let health=100;
-let score=0;
-let bossHP=30;
-let bossMax=30;
+// الأعداء
+let enemies=[];
+let shots=[];
+let score=0,level=1,hp=100;
 let gameOver=false;
-let victory=false;
-
-const bossNames=[
-'الزعيم الصغير',
-'الذبابة المدرعة',
-'ملكة الحشرات'
-];
-
-const bossColors=[0x823ac7,0x2477ad,0x9d263b];
-
-const boss=new THREE.Group();
-scene.add(boss);
-
-function updateUI(){
-document.getElementById('stage').textContent=stage;
-document.getElementById('health').textContent=Math.ceil(health);
-document.getElementById('score').textContent=score;
-document.getElementById('bossName').textContent=bossNames[stage-1];
-document.getElementById('bossFill').style.width=
-Math.max(0,bossHP/bossMax*100)+'%';
-}
-
-function createBoss(){
-while(boss.children.length)boss.remove(boss.children[0]);
-
-const material=new THREE.MeshStandardMaterial({
-color:bossColors[stage-1]
-});
-
-const shell=new THREE.Mesh(
-new THREE.SphereGeometry(stage===3?1.25:.95,18,18),
-material
-);
-shell.scale.set(1.3,1,1.25);
-boss.add(shell);
-
-const face=new THREE.Mesh(
-new THREE.SphereGeometry(.4,14,14),
-new THREE.MeshStandardMaterial({color:0x222222})
-);
-face.position.z=.85;
-boss.add(face);
-
-for(const s of [-1,1]){
-const eye=new THREE.Mesh(
-new THREE.SphereGeometry(.13,10,10),
-new THREE.MeshStandardMaterial({
-color:0xff1111,
-emissive:0x880000
-})
-);
-eye.position.set(s*.25,.18,1.18);
-boss.add(eye);
-
-for(let j=0;j<3;j++){
-const leg=new THREE.Mesh(
-new THREE.CylinderGeometry(.05,.08,.9,7),
-material
-);
-leg.position.set(s*.85,-.4,(j-1)*.5);
-leg.rotation.z=s*.65;
-boss.add(leg);
-}
-}
-
-boss.position.set(0,2,-10);
-
-bossMax=stage===1?30:stage===2?55:85;
-bossHP=bossMax;
-updateUI();
-}
-
-function message(text){
-const el=document.getElementById('msg');
-el.innerHTML=text;
-el.style.display='block';
-}
-
-function nextStage(){
-if(stage<3){
-stage++;
-score+=100;
-createBoss();
-message('🏆 فزت على الزعيم!<br>المرحلة '+stage);
-
-setTimeout(()=>{
-document.getElementById('msg').style.display='none';
-},1700);
-}else{
-victory=true;
-message('🎉 انتصرت!<br>أنهيت جميع المراحل!<br><button onclick="location.reload()">العب من جديد</button>');
-}
-updateUI();
-}
-
-const shots=[];
-const shotMaterial=new THREE.MeshStandardMaterial({
-color:0x83f5ff,
-emissive:0x1688bb
-});
-
-function shoot(){
-if(gameOver||victory)return;
-
-const p=new THREE.Mesh(
-new THREE.SphereGeometry(.16,10,10),
-shotMaterial
-);
-
-p.position.copy(fly.position);
-scene.add(p);
-shots.push({mesh:p,life:0});
-}
-
-const keys={};
-
-addEventListener('keydown',e=>{
-keys[e.key.toLowerCase()]=true;
-if(e.code==='Space')shoot();
-});
-
-addEventListener('keyup',e=>{
-keys[e.key.toLowerCase()]=false;
-});
-
-let move={x:0,y:0};
-let pointer=null;
-
-const base=document.getElementById('base');
-const stick=document.getElementById('stick');
-
-function moveStick(e){
-const r=base.getBoundingClientRect();
-
-let dx=e.clientX-(r.left+r.width/2);
-let dy=e.clientY-(r.top+r.height/2);
-
-const max=48;
-const len=Math.hypot(dx,dy);
-
-if(len>max){
-dx=dx/len*max;
-dy=dy/len*max;
-}
-
-move.x=dx/max;
-move.y=dy/max;
-
-stick.style.transform=
-'translate('+dx+'px,'+dy+'px)';
-}
-
-base.addEventListener('pointerdown',e=>{
-pointer=e.pointerId;
-base.setPointerCapture(pointer);
-moveStick(e);
-});
-
-base.addEventListener('pointermove',e=>{
-if(e.pointerId===pointer)moveStick(e);
-});
-
-function release(e){
-if(e.pointerId===pointer){
-pointer=null;
-move={x:0,y:0};
-stick.style.transform='translate(0,0)';
-}
-}
-
-base.addEventListener('pointerup',release);
-base.addEventListener('pointercancel',release);
-
-let vertical=0;
-
-function hold(id,value){
-const b=document.getElementById(id);
-
-b.addEventListener('pointerdown',e=>{
-e.preventDefault();
-vertical=value;
-b.setPointerCapture(e.pointerId);
-});
-
-for(const ev of ['pointerup','pointercancel','pointerleave']){
-b.addEventListener(ev,()=>{
-if(vertical===value)vertical=0;
-});
-}
-}
-
-hold('up',1);
-hold('down',-1);
-
-document.getElementById('shoot').addEventListener('pointerdown',e=>{
-e.preventDefault();
-shoot();
-});
-
-createBoss();
-
+let fireHeld=false,upHeld=false,downHeld=false;
+let joyX=0,joyY=0;
+let shotTimer=0,damageTimer=0;
 const clock=new THREE.Clock();
 
-function animate(){
-requestAnimationFrame(animate);
-
-const dt=Math.min(clock.getDelta(),.04);
-const t=clock.elapsedTime;
-
-if(!gameOver&&!victory){
-
-let x=move.x+
-(keys.a||keys.arrowleft?-1:0)+
-(keys.d||keys.arrowright?1:0);
-
-let z=move.y+
-(keys.w||keys.arrowup?-1:0)+
-(keys.s||keys.arrowdown?1:0);
-
-fly.position.x+=x*.12;
-fly.position.z+=z*.12;
-
-let y=vertical;
-
-if(keys.e||keys[' '])y=1;
-if(keys.q||keys.shift)y=-1;
-
-fly.position.y+=y*.1;
-
-fly.position.x=THREE.MathUtils.clamp(fly.position.x,-19,19);
-fly.position.z=THREE.MathUtils.clamp(fly.position.z,-19,19);
-fly.position.y=THREE.MathUtils.clamp(fly.position.y,.6,9);
-
-if(Math.abs(x)+Math.abs(z)>.05){
-fly.rotation.y=Math.atan2(x,-z);
+function makeEnemy(boss=false){
+ const g=new THREE.Group();
+ const bodyMat=new THREE.MeshStandardMaterial({color:boss?0x7b28a8:0x9b5b22});
+ sphere(g,0,0,0,boss?.85:.42,boss?.7:.35,boss?.65:.42,bodyMat);
+ sphere(g,0,.12,-.42,boss?.5:.27,boss?.4:.23,boss?.4:.25,black);
+ for(const s of [-1,1]){
+  sphere(g,s*.18,.25,-.58,.09,.1,.08,eyeMat);
+  const wing=sphere(g,s*.48,.4,0,boss?.65:.35,.035,.2,wingMat);
+  wing.rotation.z=s*.3;
+ }
+ g.position.set((Math.random()-.5)*24,2,-22-Math.random()*12);
+ scene.add(g);
+ enemies.push({mesh:g,boss,hp:boss?12:2,speed:boss?1.5:2.3,hit:0});
 }
 
-wings.forEach((w,i)=>{
-w.rotation.z=Math.sin(t*22)*(i?1:-1)*.7;
+function spawnWave(){
+ const boss=level%3===0;
+ const count=boss?1:Math.min(3+level,9);
+ for(let i=0;i<count;i++)makeEnemy(boss);
+ document.getElementById('message').textContent=boss?'👑 ظهر الزعيم!':'⚔️ موجة جديدة!';
+ setTimeout(()=>{document.getElementById('message').textContent='دافع عن نفسك وأطلق النار!'},1800);
+}
+spawnWave();
+
+function shoot(){
+ let target=null,dist=Infinity;
+ for(const e of enemies){
+  const d=fly.position.distanceTo(e.mesh.position);
+  if(d<dist){dist=d;target=e;}
+ }
+ let direction=new THREE.Vector3(0,0,-1);
+ if(target){
+  direction.copy(target.mesh.position).sub(fly.position).normalize();
+ }
+ const ball=new THREE.Mesh(
+  new THREE.SphereGeometry(.13,8,8),
+  new THREE.MeshBasicMaterial({color:0xffee55})
+ );
+ ball.position.copy(fly.position);
+ scene.add(ball);
+ shots.push({mesh:ball,dir:direction,life:2.5});
+}
+
+function updateHUD(){
+ document.getElementById('hp').textContent=hp;
+ document.getElementById('score').textContent=score;
+ document.getElementById('level').textContent=level;
+}
+
+function endGame(){
+ gameOver=true;
+ document.getElementById('endTitle').textContent='انتهت اللعبة!';
+ document.getElementById('endText').textContent='نقاطك: '+score;
+ document.getElementById('overlay').style.display='flex';
+}
+
+function restartGame(){
+ for(const e of enemies)scene.remove(e.mesh);
+ for(const s of shots)scene.remove(s.mesh);
+ enemies=[];shots=[];
+ score=0;level=1;hp=100;gameOver=false;
+ fly.position.set(0,2,8);
+ updateHUD();
+ document.getElementById('overlay').style.display='none';
+ spawnWave();
+}
+
+// الجير
+const joy=document.getElementById('joy');
+const stick=document.getElementById('stick');
+let joyPointer=null;
+function setJoy(e){
+ const r=joy.getBoundingClientRect();
+ let x=e.clientX-(r.left+r.width/2);
+ let y=e.clientY-(r.top+r.height/2);
+ const max=42;
+ const len=Math.hypot(x,y);
+ if(len>max){x=x/len*max;y=y/len*max;}
+ joyX=x/max;joyY=y/max;
+ stick.style.transform=`translate(${x}px,${y}px)`;
+}
+joy.addEventListener('pointerdown',e=>{
+ joyPointer=e.pointerId;
+ joy.setPointerCapture(e.pointerId);
+ setJoy(e);
 });
-
-// جمع الطعام
-for(let i=foods.length-1;i>=0;i--){
-foods[i].rotation.y+=dt*2;
-
-if(fly.position.distanceTo(foods[i].position)<.75){
-scene.remove(foods[i]);
-foods.splice(i,1);
-score+=10;
-updateUI();
+joy.addEventListener('pointermove',e=>{
+ if(e.pointerId===joyPointer)setJoy(e);
+});
+function releaseJoy(){
+ joyPointer=null;joyX=0;joyY=0;
+ stick.style.transform='translate(0px,0px)';
 }
+joy.addEventListener('pointerup',releaseJoy);
+joy.addEventListener('pointercancel',releaseJoy);
+
+function holdButton(id,setter){
+ const el=document.getElementById(id);
+ el.addEventListener('pointerdown',e=>{
+  e.preventDefault();setter(true);
+ });
+ el.addEventListener('pointerup',()=>setter(false));
+ el.addEventListener('pointercancel',()=>setter(false));
+ el.addEventListener('pointerleave',()=>setter(false));
 }
+holdButton('fire',v=>fireHeld=v);
+holdButton('up',v=>upHeld=v);
+holdButton('down',v=>downHeld=v);
 
-// حركة الزعيم
-boss.position.x=Math.sin(t*.7+stage)*2.3;
-boss.position.y=2+Math.sin(t*2)*.25;
+function animate(){
+ requestAnimationFrame(animate);
+ const dt=Math.min(clock.getDelta(),.04);
+ if(!gameOver){
+  // الحركة
+  fly.position.x+=joyX*10*dt;
+  fly.position.z+=joyY*10*dt;
+  if(upHeld)fly.position.y+=7*dt;
+  if(downHeld)fly.position.y-=7*dt;
+  fly.position.x=THREE.MathUtils.clamp(fly.position.x,-35,35);
+  fly.position.z=THREE.MathUtils.clamp(fly.position.z,-30,25);
+  fly.position.y=THREE.MathUtils.clamp(fly.position.y,.8,12);
+  fly.rotation.z=-joyX*.3;
+  fly.rotation.x=joyY*.15;
 
-// اصطدام الزعيم بالذبابة
-if(boss.position.distanceTo(fly.position)<1.8){
-health-=dt*10;
-updateUI();
+  // حركة الأجنحة
+  const t=performance.now()*.025;
+  wings[0].rotation.z=Math.sin(t)*.8-.3;
+  wings[1].rotation.z=-Math.sin(t)*.8+.3;
 
-if(health<=0){
-health=0;
-gameOver=true;
-message('انتهت اللعبة<br><button onclick="location.reload()">حاول مرة ثانية</button>');
+  // كاميرا خلف الذبابة
+  const camPos=new THREE.Vector3(
+   fly.position.x,
+   fly.position.y+4,
+   fly.position.z+9
+  );
+  camera.position.lerp(camPos,1-Math.pow(.001,dt));
+  camera.lookAt(fly.position.x,fly.position.y,fly.position.z-5);
+
+  // الرمي المستمر
+  shotTimer-=dt;
+  if(fireHeld&&shotTimer<=0){
+   shoot();shotTimer=.22;
+  }
+
+  // حركة المقذوفات
+  for(let i=shots.length-1;i>=0;i--){
+   const s=shots[i];
+   s.mesh.position.addScaledVector(s.dir,24*dt);
+   s.life-=dt;
+   let remove=s.life<=0;
+   for(let j=enemies.length-1;j>=0&&!remove;j--){
+    const e=enemies[j];
+    if(s.mesh.position.distanceTo(e.mesh.position)<1.1){
+     e.hp--;
+     remove=true;
+     if(e.hp<=0){
+      score+=e.boss?100:10;
+      scene.remove(e.mesh);
+      enemies.splice(j,1);
+      updateHUD();
+     }
+    }
+   }
+   if(remove){
+    scene.remove(s.mesh);
+    shots.splice(i,1);
+   }
+  }
+
+  // الأعداء يقتربون من الذبابة
+  damageTimer-=dt;
+  for(const e of enemies){
+   const dir=new THREE.Vector3().subVectors(fly.position,e.mesh.position).normalize();
+   e.mesh.position.addScaledVector(dir,e.speed*dt);
+   e.mesh.lookAt(fly.position);
+   if(e.mesh.position.distanceTo(fly.position)<1.25&&damageTimer<=0){
+    hp-=e.boss?12:7;
+    damageTimer=.55;
+    updateHUD();
+    if(hp<=0){hp=0;updateHUD();endGame();}
+   }
+  }
+
+  // نهاية الموجة
+  if(enemies.length===0){
+   level++;
+   hp=Math.min(100,hp+15);
+   updateHUD();
+   spawnWave();
+  }
+ }
+ renderer.render(scene,camera);
 }
-}
-
-// المقذوفات
-for(let i=shots.length-1;i>=0;i--){
-
-const s=shots[i];
-s.life+=dt;
-
-s.mesh.position.z-=dt*19;
-
-s.mesh.position.x+=
-(boss.position.x-s.mesh.position.x)*dt*.12;
-
-if(s.mesh.position.distanceTo(boss.position)<1.35){
-
-bossHP-=10;
-score+=5;
-
-scene.remove(s.mesh);
-shots.splice(i,1);
-
-updateUI();
-
-if(bossHP<=0){
-nextStage();
-}
-continue;
-}
-
-if(s.life>2.5){
-scene.remove(s.mesh);
-shots.splice(i,1);
-}
-}
-}
-
-// الكاميرا
-const target=new THREE.Vector3(
-fly.position.x,
-fly.position.y+3.1,
-fly.position.z+6.5
-);
-
-camera.position.lerp(target,.09);
-
-camera.lookAt(
-fly.position.x,
-fly.position.y,
-fly.position.z-1
-);
-
-renderer.render(scene,camera);
-}
-
 animate();
 
-// تغيير حجم الشاشة
 addEventListener('resize',()=>{
-camera.aspect=innerWidth/innerHeight;
-camera.updateProjectionMatrix();
-renderer.setSize(innerWidth,innerHeight);
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+ renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
 });
+</script>
+</body>
+</html>
